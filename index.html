@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<head>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            height: 100dvh;
+
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container div:last-child {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            gap: .1rem
+        }
+
+        button {
+            flex: 1;
+            padding: .5rem .5rem;
+            height: 5rem;
+            max-width: 5rem;
+            border-radius: 50%;
+            border: none;
+            background-color: #fff;
+            box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+            cursor: pointer;
+        }
+
+        .app {
+            color: #fff;
+
+            width: 70vh;
+            height: 55vh;
+
+            display: flex;
+            align-items: flex-end;
+
+            background-color: #000;
+        }
+
+        .counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
+            flex: 1;
+            height: 7vh;
+
+            transition: all .3s;
+        }
+
+        /* row start / column start / row end / column end */
+
+        #rust {
+            background-color: #1abc9c;
+        }
+
+        #c {
+            background-color: #e74c3c;
+        }
+
+        #js {
+            background-color: #8e44ad;
+        }
+
+        #go {
+            background-color: #f39c12;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        function vw(value) {
+            return `${value}vh`
+        }
+
+        function compute(values) {
+            const { c, go, rust, js } = values
+            const max = Math.max(c, go, rust, js)
+
+            const rustElement = document.getElementById("rust")
+            const jsElement = document.getElementById("js")
+            const goElement = document.getElementById("go")
+            const cElement = document.getElementById("c")
+
+            rustElement.style.height = vw(5 + 50 * rust / max)
+            jsElement.style.height = vw(5 + 50 * js / max)
+            goElement.style.height = vw(5 + 50 * go / max)
+            cElement.style.height = vw(5 + 50 * c / max)
+
+            rustElement.textContent = `RUST (${rust})`
+            jsElement.textContent = `JS (${js})`
+            goElement.textContent = `GO (${go})`
+            cElement.textContent = `JUG BOT (${c})`
+        }
+
+        let socket = new WebSocket(`ws://localhost:3000/jug`);
+
+        socket.onopen = () => {
+            console.log('open')
+        }
+
+        socket.onmessage = event => {
+            const text = JSON.parse(event.data)
+
+            const rust = parseInt(text.rust) || 0
+            const js = parseInt(text.js) || 0
+            const go = parseInt(text.go) || 0
+            const c = parseInt(text.c) || 0
+
+            compute({ rust, js, go, c })
+        }
+
+        socket.onclose = function (e) {
+            console.log('Socket is closed. Reconnect will be attempted in 5 second.', e.reason);
+        };
+
+        socket.onerror = function (err) {
+            console.error('Socket encountered error: ', err.message, 'Closing socket');
+            socket.close();
+        };
+
+        function increment(value) {
+            fetch(`http://localhost:8080?name=${value}`)
+        }
+    </script>
+
+    <div class="container">
+        <div class="app" onclick="compute()">
+            <div class="counter" id="rust">RUST</div>
+            <div class="counter" id="c">C</div>
+            <div class="counter" id="js">JS</div>
+            <div class="counter" id="go">GO</div>
+        </div>
+
+        <div>
+            <button onclick="increment('rust')">Un max de RUST</button>
+            <button onclick="increment('c')">Un max de C</button>
+            <button onclick="increment('js')">Un max de JS</button>
+            <button onclick="increment('go')">Un max de GO</button>
+        </div>
+    </div>
+</body>
+
+</html>
