@@ -26,6 +26,12 @@ impl Guest for HttpServer {
         let count = wasi::keyvalue::atomics::increment(&bucket, &name, 1)
             .expect("failed to increment count");
 
+        wasi::logging::logging::log( 
+            wasi::logging::logging::Level::Info,
+            "",
+            &format!("Hello x{count}, {name}!\n"),
+        );
+
         response_body
             .write()
             .unwrap()

@@ -1,4 +1,5 @@
 const { WebSocketServer } = require('ws');
+const fs = require('fs');
 const http = require('http');
 
 let clients = {};
@@ -34,7 +35,29 @@ const emit = (channel, message) => {
 }
 
 (async () => {
-    const server = http.createServer()
+    const indexContent = fs.readFileSync('./index.html').toString('utf8');
+    const server = http.createServer((req, res) => {
+        const method = req.method;
+        const url = req.url;
+        const query = new URL('http://localhost' + url).searchParams;
+        if (method === "GET") {
+            if (url === '/' || url === '/index.html') {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(indexContent);
+                return;
+            }
+            if (url.startsWith('/ping')) {
+                const name = query.get('name');
+                return fetch(`http://localhost:8080/?name=${name}`).then((hr) => {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ inc: name }));
+                });
+            }
+        }
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'not_found' }));
+        return;
+    });
 
     createWebSocket(server)
 
@@ -47,16 +70,12 @@ const emit = (channel, message) => {
     await client.connect();
 
     setInterval(async () => {
-        // console.log('pulling')
-
         const rust = await client.get('rust')
         const go = await client.get('go')
         const js = await client.get('js')
         const c = await client.get('c')
-
-
-        emit('jug', JSON.stringify({ rust, go, js, c }))
-    }, 1000)
+        emit('ws', JSON.stringify({ rust, go, js, c }))
+    }, 300)
 
     server.listen(3000, () => console.log(`listening on 3000`));
 

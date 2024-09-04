@@ -87,6 +87,8 @@
 
 <body>
     <script>
+        const https = window.location.protocol === 'https:';
+        
         function vw(value) {
             return `${value}vh`
         }
@@ -108,10 +110,10 @@
             rustElement.textContent = `RUST (${rust})`
             jsElement.textContent = `JS (${js})`
             goElement.textContent = `GO (${go})`
-            cElement.textContent = `JUG BOT (${c})`
+            cElement.textContent = `JUG BOT (${c})` 
         }
 
-        let socket = new WebSocket(`ws://localhost:3000/jug`);
+        let socket = new WebSocket(`${https ? 'wss' : 'ws'}://${window.location.host}/ws`);
 
         socket.onopen = () => {
             console.log('open')
@@ -138,7 +140,7 @@
         };
 
         function increment(value) {
-            fetch(`http://localhost:8080?name=${value}`)
+            fetch(`${https ? 'https' : 'http'}://${window.location.host}/ping?name=${value}`)
         }
     </script>
 
