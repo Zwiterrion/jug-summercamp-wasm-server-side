@@ -4,6 +4,13 @@ const http = require('http');
 
 let clients = {};
 
+const ports = {
+    'rust': 8080,
+    'c': 8083,
+    'js': 8082,
+    'go': 8081
+}
+
 function onSocketError(err) {
     console.error(err);
 }
@@ -51,7 +58,10 @@ const emit = (channel, message) => {
             }
             if (url.startsWith('/ping')) {
                 const name = query.get('name');
-                return fetch(`http://localhost:8080/?name=${name}`).then((hr) => {
+                const port = ports[name] || 8080;
+                const callUrl = `http://localhost:${port}/?name=${name}`;
+                console.log(callUrl);
+                return fetch(callUrl).then((hr) => {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ inc: name }));
                 });

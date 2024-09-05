@@ -1,7 +1,7 @@
 apiVersion: core.oam.dev/v1beta1
 kind: Application
 metadata:
-  name: rust-hello-world
+  name: jug-component-rust
   annotations:
     description: 'HTTP hello world demo in Rust, using the WebAssembly Component Model and WebAssembly Interfaces Types (WIT)'
     wasmcloud.dev/authors: wasmCloud team
@@ -15,7 +15,7 @@ spec:
     - name: http-component
       type: component
       properties:
-        image: file://./build/http_hello_world_s.wasm
+        image: file://./build/jug_component_rust_s.wasm
         # To use the a precompiled version of this component, use the line below instead:
         # image: ghcr.io/wasmcloud/components/http-hello-world-rust:0.1.0
       traits:

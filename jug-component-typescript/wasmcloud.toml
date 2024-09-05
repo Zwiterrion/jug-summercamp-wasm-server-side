@@ -1,0 +1,12 @@
+name = "jug-component-ts"
+language = "typescript" 
+type = "component"
+version = "0.1.0"
+
+[component]
+wit_world = "hello"
+wasm_target = "wasm32-wasi-preview2"
+
+build_command = "npm run build"
+build_artifact = "dist/jug-component-ts.wasm"
+destination = "build/jug_component_ts_s.wasm"
