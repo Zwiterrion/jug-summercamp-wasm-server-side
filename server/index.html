@@ -11,7 +11,11 @@
             align-items: center;
             justify-content: center;
 
-            height: 100dvh;
+            height: calc(100dvh - 10dvh);
+            min-height: calc(100vh - 10vh);
+
+            width: 100dvw;
+            min-width: 100vw;
 
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 1.5rem;
@@ -20,32 +24,72 @@
         .container {
             display: flex;
             flex-direction: column;
+
+            height: calc(100dvh - 10dvh);
+            min-height: calc(100vh - 10vh);
+
+            width: 100dvw;
+            min-width: 100vw;
         }
 
-        .container div:last-child {
+        .container>div:last-child {
             display: flex;
             justify-content: space-between;
-            margin-top: 1rem;
-            gap: .1rem
+            margin: 1rem 0;
+            gap: .25rem;
+            padding: .25rem;
         }
 
         button {
             flex: 1;
-            padding: .5rem .5rem;
-            height: 5rem;
-            max-width: 5rem;
-            border-radius: 50%;
-            border: none;
-            background-color: #fff;
-            box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+            align-items: center;
+            appearance: none;
+            background-color: #FCFCFD;
+            border-radius: 4px;
+            border-width: 0;
+            box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            box-sizing: border-box;
+            color: #36395A;
             cursor: pointer;
+            display: inline-flex;
+            font-family: "JetBrains Mono", monospace;
+            height: 5rem;
+            justify-content: center;
+            line-height: 1;
+            list-style: none;
+            overflow: hidden;
+            padding-left: 16px;
+            padding-right: 16px;
+            position: relative;
+            text-align: left;
+            text-decoration: none;
+            transition: box-shadow .15s, transform .15s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            will-change: box-shadow, transform;
+            font-size: 2rem;
+        }
+
+        button:focus {
+            box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+        }
+
+        button:hover {
+            box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            box-shadow: #D6D6E7 0 3px 7px inset;
+            transform: translateY(2px);
         }
 
         .app {
             color: #fff;
 
-            width: 70vh;
-            height: 55vh;
+            flex: 1;
 
             display: flex;
             align-items: flex-end;
@@ -65,22 +109,20 @@
             transition: all .3s;
         }
 
-        /* row start / column start / row end / column end */
-
         #rust {
-            background-color: #1abc9c;
+            background-color: #003844;
         }
 
         #c {
-            background-color: #e74c3c;
+            background-color: #006C67;
         }
 
         #js {
-            background-color: #8e44ad;
+            background-color: #f194b4;
         }
 
         #go {
-            background-color: #f39c12;
+            background-color: #FFB100;
         }
     </style>
 </head>
@@ -94,7 +136,7 @@
         }
 
         function randomId(length) {
-            return Math.random().toString(36).substring(2, length+2);
+            return Math.random().toString(36).substring(2, length + 2);
         }
 
         function compute(values) {
@@ -114,7 +156,7 @@
             rustElement.textContent = `RUST (${rust})`
             jsElement.textContent = `JS (${js})`
             goElement.textContent = `GO (${go})`
-            cElement.textContent = `JUG BOT (${c})` 
+            cElement.textContent = `JUG BOT (${c})`
         }
 
         let clientId = randomId(10);
@@ -157,11 +199,11 @@
             <div class="counter" id="go">GO</div>
         </div>
 
-        <div>
-            <button onclick="increment('rust')">Un max de RUST</button>
-            <button onclick="increment('c')">Un max de C</button>
-            <button onclick="increment('js')">Un max de JS</button>
-            <button onclick="increment('go')">Un max de GO</button>
+        <div style="width: calc(100% - 2rem); padding: 1rem">
+            <button onclick="increment('rust')">RUST</button>
+            <button onclick="increment('c')">C</button>
+            <button onclick="increment('js')">JS</button>
+            <button onclick="increment('go')">GO</button>
         </div>
     </div>
 </body>
