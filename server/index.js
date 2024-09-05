@@ -8,7 +8,7 @@ const ports = {
     'rust': 8080,
     'c': 8083,
     'js': 8082,
-    'go': 8081
+    'go': 8086
 }
 
 function onSocketError(err) {

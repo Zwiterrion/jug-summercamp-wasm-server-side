@@ -1,7 +1,7 @@
 apiVersion: core.oam.dev/v1beta1
 kind: Application
 metadata:
-  name: jug-component-go
+  name: tinygo-hello-world
   annotations:
     description: 'HTTP hello world demo in Golang (TinyGo), using the WebAssembly Component Model and WebAssembly Interfaces Types (WIT)'
     wasmcloud.dev/authors: wasmCloud team
@@ -15,15 +15,12 @@ spec:
     - name: http-component
       type: component
       properties:
-        image: file://./build/jug_component_go_s.wasm
-        # To use the a precompiled version of this component, use the line below instead:
-        # image: ghcr.io/wasmcloud/components/http-hello-world-rust:0.1.0
+        image: file://./build/http_hello_world_s.wasm
       traits:
         # Govern the spread/scheduling of the component
         - type: spreadscaler
           properties:
-            replicas: 100
-            # The new key-value link configuration
+            instances: 1
         - type: link
           properties:
             target: kvredis
@@ -34,22 +31,24 @@ spec:
               - name: redis-url
                 properties:
                   url: redis://127.0.0.1:6379
-    # The new capability provider
+
+    # Add a capability provider that enables HTTP access
     - name: kvredis
       type: capability
       properties:
         image: ghcr.io/wasmcloud/keyvalue-redis:0.27.0
-
-    # Add a capability provider that enables HTTP access
     - name: httpserver
       type: capability
       properties:
         image: ghcr.io/wasmcloud/http-server:0.22.0
       traits:
-        # Establish a unidirectional link from this http server provider (the "source")
-        # to the `http-component` component (the "target") so the component can handle incoming HTTP requests,
+        # Link the httpserver to the component, and configure the HTTP server
+        # to listen on port 8080 for incoming requests
         #
-        # The source (this provider) is configured such that the HTTP server listens on 127.0.0.1:8080
+        # Since the HTTP server calls the `http-component` component, we establish
+        # a unidirectional link from this `httpserver` provider (the "source")
+        # to the `http-component` component (the "target"), so the server can invoke
+        # the component to handle a request.
         - type: link
           properties:
             target: http-component
@@ -59,5 +58,4 @@ spec:
             source_config:
               - name: default-http
                 properties:
-                  address: 127.0.0.1:8081
-
+                  address: 127.0.0.1:8086

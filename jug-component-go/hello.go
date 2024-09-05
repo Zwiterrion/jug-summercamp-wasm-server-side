@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	http "github.com/wasmcloud/wasmcloud/examples/golang/components/jug-component-go/gen"
+	http "github.com/wasmcloud/wasmcloud/examples/golang/components/http-hello-world/gen"
 )
 
 // Helper type aliases to make code more readable
@@ -29,7 +29,8 @@ func (h HttpServer) Handle(request HttpRequest, responseWriter HttpResponseWrite
 	body := httpResponse.Body().Unwrap()
 	bodyWrite := body.Write().Unwrap()
 	name := getNameFromPath(request.PathWithQuery().Unwrap())
-	http.WasiLoggingLoggingLog(http.WasiLoggingLoggingLevelInfo(), "", fmt.Sprintf("Greeting %s from go", name))
+
+	http.WasiLoggingLoggingLog(http.WasiLoggingLoggingLevelInfo(), "", fmt.Sprintf("Greeting %s", name))
 	bucket := http.WasiKeyvalue0_2_0_draft_StoreOpen("").Unwrap()
 	count := http.WasiKeyvalue0_2_0_draft_AtomicsIncrement(bucket, name, 1).Unwrap()
 

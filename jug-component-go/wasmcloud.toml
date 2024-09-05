@@ -1,4 +1,4 @@
-name = "jug-component-go"
+name = "http-hello-world"
 language = "tinygo"
 type = "component"
 version = "0.1.0"
@@ -6,4 +6,4 @@ version = "0.1.0"
 [component]
 wit_world = "hello"
 wasm_target = "wasm32-wasi-preview2"
-destination = "build/jug-component-go_s.wasm"
+destination = "build/http_hello_world_s.wasm"
