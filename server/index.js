@@ -12,18 +12,19 @@ const createWebSocket = server => {
     wss = new WebSocketServer({ noServer: true });
     wss.on('connection', (ws, request, client) => {
         ws.on('error', onSocketError);
-
-        clients[request.url.slice(1)] = ws;
+        const query = new URL('http://localhost' + request.url).searchParams;
+        const id = query.get('id');
+        console.log('adding connection', id)
+        clients[id] = ws;
         ws.on('close', () => {
-            delete clients[request.url.slice(1)];
+            console.log('removing connection', id)
+            delete clients[id];
         })
     })
 
     server.on('upgrade', (request, socket, head) => {
         socket.on('error', onSocketError);
-
         socket.removeListener('error', onSocketError);
-
         wss.handleUpgrade(request, socket, head, ws => {
             wss.emit('connection', ws, request);
         });
@@ -31,7 +32,9 @@ const createWebSocket = server => {
 }
 
 const emit = (channel, message) => {
-    clients[channel]?.send(message)
+    Object.values(clients).map(client => {
+        client.send(message)
+    });
 }
 
 (async () => {

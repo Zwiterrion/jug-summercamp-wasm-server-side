@@ -88,9 +88,13 @@
 <body>
     <script>
         const https = window.location.protocol === 'https:';
-        
+
         function vw(value) {
             return `${value}vh`
+        }
+
+        function randomId(length) {
+            return Math.random().toString(36).substring(2, length+2);
         }
 
         function compute(values) {
@@ -113,7 +117,8 @@
             cElement.textContent = `JUG BOT (${c})` 
         }
 
-        let socket = new WebSocket(`${https ? 'wss' : 'ws'}://${window.location.host}/ws`);
+        let clientId = randomId(10);
+        let socket = new WebSocket(`${https ? 'wss' : 'ws'}://${window.location.host}/ws?id=${clientId}`);
 
         socket.onopen = () => {
             console.log('open')
@@ -140,7 +145,7 @@
         };
 
         function increment(value) {
-            fetch(`${https ? 'https' : 'http'}://${window.location.host}/ping?name=${value}`)
+            fetch(`${https ? 'https' : 'http'}://${window.location.host}/ping?name=${value}&id=${clientId}`)
         }
     </script>
 
