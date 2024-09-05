@@ -1,3 +1,5 @@
 node_modules
 jug-component/build
+jug-component-rust/build
 jug-component/target
+jug-component-rust/target
